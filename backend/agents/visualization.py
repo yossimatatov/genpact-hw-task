@@ -8,6 +8,14 @@ from state.state import AgentState
 from tools.prompts import SYSTEM_PROMPT_VISUALIZATION_AGENT
 
 
+def _format_visualization_prompt(query_to_use: str, results: object) -> str:
+    return (
+        SYSTEM_PROMPT_VISUALIZATION_AGENT
+        .replace("{query_to_use}", query_to_use)
+        .replace("{json.dumps(results)}", json.dumps(results))
+    )
+
+
 class VizPlannerOutput(BaseModel):
     needs_visualization: bool = Field(
         description="Whether the user asked for or would benefit from a visualization."
@@ -30,10 +38,8 @@ async def visualization_planner_node(state: AgentState) -> dict[str, bool]:
     if not results or state.get("query_error"):
         return {"needs_visualization": False}
 
-    system_prompt = f"""{SYSTEM_PROMPT_VISUALIZATION_AGENT}
-
-User query: {query_to_use}
-Data sample: {str(results[:5])}
+    visualization_prompt = _format_visualization_prompt(query_to_use, results[:5])
+    system_prompt = f"""{visualization_prompt}
 
 Rules:
 - If the user explicitly asks for a plot, chart, graph, or visualization, return true.
@@ -75,20 +81,7 @@ async def visualization_generator_node(state: AgentState) -> dict[str, object]:
     query_to_use = state.get("refined_query") or state["user_query"]
     results = state.get("query_result", [])
 
-    system_prompt = f"""You are a Vega-Lite expert.
-Generate a valid Vega-Lite JSON specification to visualize the provided data.
-
-User query: {query_to_use}
-Data: {json.dumps(results)}
-
-Rules:
-- Return only the JSON object.
-- Use the data property with values set to the provided data.
-- Choose appropriate encodings based on the data types.
-- Add a title and tooltips.
-- Set width to "container" and height to 300.
-- Enable autosize fit with padding.
-"""
+    system_prompt = _format_visualization_prompt(query_to_use, results)
 
     response = await client.chat.completions.create(
         model="gpt-4o",

@@ -23,12 +23,11 @@ async def response_synthesizer_node(state: AgentState) -> dict[str, str]:
     if len(str_results) > 10000:
         str_results = str_results[:10000] + "... (truncated)"
 
-    system_prompt = f"""{SYSTEM_PROMPT_SYNTHESIZER_AGENT}
-
-User question: {user_query}
-SQL query used: {sql_query}
-SQL result: {str_results}
-"""
+    system_prompt = SYSTEM_PROMPT_SYNTHESIZER_AGENT.format(
+        user_query=user_query,
+        sql_query=sql_query,
+        results=str_results,
+    )
 
     response = await client.chat.completions.create(
         model="gpt-4o",

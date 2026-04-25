@@ -24,10 +24,9 @@ async def table_selector_node(state: AgentState) -> dict[str, list[str]]:
     formatted_tables = ", ".join(all_tables)
     query_to_use = state.get("refined_query") or state["user_query"]
 
-    system_prompt = f"""{SYSTEM_PROMPT_TABLE_SELECTOR_AGENT}
-
-Available tables: {formatted_tables}
-"""
+    system_prompt = SYSTEM_PROMPT_TABLE_SELECTOR_AGENT.format(
+        formatted_tables=formatted_tables,
+    )
 
     response = await client.chat.completions.create(
         model="gpt-4o",

@@ -12,7 +12,6 @@ def setup_logger(name: str = "app") -> logging.Logger:
         "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
     )
 
-    # Вывод в консоль
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.DEBUG)
     console_handler.setFormatter(formatter)

@@ -13,11 +13,9 @@ async def sql_generator_node(state: AgentState) -> dict[str, object]:
     selected_tables = state.get("selected_tables")
     schema_context = get_database_schema_string(selected_tables)
 
-    system_prompt = f"""{SYSTEM_PROMPT_SQL_GENERATOR_AGENT}
-
-Schema:
-{schema_context}
-"""
+    system_prompt = SYSTEM_PROMPT_SQL_GENERATOR_AGENT.format(
+        schema_context=schema_context,
+    )
 
     query_to_use = state.get("refined_query") or state["user_query"]
     validation_error = state.get("validation_error")
