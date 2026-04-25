@@ -1,0 +1,9 @@
+langgraph
+langchain
+langchain-openai
+langsmith
+sqlalchemy
+python-dotenv
+pytest
+openai
+streamlit
