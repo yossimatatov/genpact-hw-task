@@ -13,14 +13,14 @@ BACKEND_DIR = PROJECT_ROOT / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from backend.config import settings 
-from backend.graph.graph import app_graph  
+from config import settings 
+from graph.graph import app_graph  
 
 
 EXAMPLE_QUESTIONS = [
     "What is the average grade in Database Systems?",
     "How many students are enrolled in each course in Spring 2026?",
-    "Which courses does Elena Smirnova teach?",
+    "Which courses does Rachel Cohen teach?",
     "List students who failed any course.",
 ]
 

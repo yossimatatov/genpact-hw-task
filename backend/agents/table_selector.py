@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 from services.llm import get_openai_client
 from state.state import AgentState
 from tools.prompts import SYSTEM_PROMPT_TABLE_SELECTOR_AGENT
+from tools.schema import expand_tables_with_relationships
 from tools.sql import get_table_names
 
 
@@ -59,4 +60,5 @@ async def table_selector_node(state: AgentState) -> dict[str, list[str]]:
             selected = []
 
     valid_tables = [table for table in selected if table in all_tables]
-    return {"selected_tables": valid_tables or all_tables}
+    expanded_tables = expand_tables_with_relationships(valid_tables)
+    return {"selected_tables": expanded_tables or all_tables}
