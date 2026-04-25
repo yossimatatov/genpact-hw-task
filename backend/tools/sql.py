@@ -5,22 +5,37 @@ from config import settings
 
 DB_PATH = settings.database_path
 SCHEMA_PATH = settings.schema_path
+SEED_PATH = settings.seed_path
 
 
-def initialize_database() -> None:
+def seed_database(reset: bool = False) -> None:
     """
-    Creates the local SQLite database from schema.sql when it does not exist.
+    Creates and seeds the SQLite database from the configured SQL files.
     """
+    if reset and DB_PATH.exists():
+        DB_PATH.unlink()
+
     if DB_PATH.exists():
         return
 
     if not SCHEMA_PATH.exists():
         raise FileNotFoundError(f"Schema file not found at {SCHEMA_PATH}")
 
+    if not SEED_PATH.exists():
+        raise FileNotFoundError(f"Seed file not found at {SEED_PATH}")
+
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute("PRAGMA foreign_keys = ON;")
         conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+        conn.executescript(SEED_PATH.read_text(encoding="utf-8"))
+
+
+def initialize_database() -> None:
+    """
+    Creates the local SQLite database when it does not exist.
+    """
+    seed_database()
 
 
 def get_db_connection() -> sqlite3.Connection:

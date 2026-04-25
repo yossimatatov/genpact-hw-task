@@ -13,8 +13,8 @@ BACKEND_DIR = PROJECT_ROOT / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from config import settings  # noqa: E402
-from graph.graph import app_graph  # noqa: E402
+from backend.config import settings 
+from backend.graph.graph import app_graph  
 
 
 EXAMPLE_QUESTIONS = [

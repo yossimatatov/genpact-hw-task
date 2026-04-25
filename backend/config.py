@@ -56,6 +56,7 @@ class Settings:
     database_url: str
     database_path: Path
     schema_path: Path
+    seed_path: Path
 
     llm_model: str
     llm_max_retries: int
@@ -68,13 +69,14 @@ class Settings:
     langsmith_tags: list[str]
 
 
-database_url = os.getenv("DATABASE_URL") or os.getenv("UNIVERSITY_DB_PATH") or "backend/data/university.db"
+database_url = os.getenv("DATABASE_URL") or os.getenv("UNIVERSITY_DB_PATH") or "db/university.db"
 
 settings = Settings(
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     database_url=database_url,
     database_path=_resolve_database_path(database_url),
-    schema_path=_resolve_project_path(os.getenv("SCHEMA_PATH", "schema.sql")),
+    schema_path=_resolve_project_path(os.getenv("SCHEMA_PATH", "db/schema.sql")),
+    seed_path=_resolve_project_path(os.getenv("SEED_PATH", "db/seed.sql")),
     llm_model=os.getenv("LLM_MODEL", "gpt-4o"),
     llm_max_retries=_get_int("LLM_MAX_RETRIES", 2),
     sql_max_retries=_get_int("SQL_MAX_RETRIES", 3),
