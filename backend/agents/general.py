@@ -1,3 +1,4 @@
+from config import settings
 from state.state import AgentState
 from services.llm import get_openai_client
 from tools.prompts import SYSTEM_PROMPT_GENERAL_AGENT
@@ -21,7 +22,7 @@ async def general_agent_node(state: AgentState):
     writer: StreamWriter = get_stream_writer()
 
     stream = await client.chat.completions.create(
-        model="gpt-4o", # TODO take from .env
+        model=settings.llm_model,
         messages=messages,
         temperature=0.7,
         stream=True,

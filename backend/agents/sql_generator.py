@@ -1,3 +1,4 @@
+from config import settings
 from services.llm import get_openai_client
 from state.state import AgentState
 from tools.logger import logger
@@ -44,7 +45,7 @@ async def sql_generator_node(state: AgentState) -> dict[str, object]:
     logger.info(f"[SQL Generator] Retry count: {retry_count}")
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=messages,
         temperature=temperature,
     )

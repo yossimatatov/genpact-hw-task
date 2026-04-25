@@ -1,6 +1,7 @@
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
 
+from config import settings
 from agents.executor import sql_executor_node
 from agents.general import general_agent_node
 from agents.rewriter import query_rewriter_node
@@ -39,7 +40,7 @@ def validator_edge(state: AgentState) -> str:
     if state.get("is_valid_sql"):
         return "sql_executor"
 
-    if state.get("retry_count", 0) < 3:
+    if state.get("retry_count", 0) < settings.sql_max_retries:
         return "sql_generator"
     return "response_synthesizer"
 
@@ -84,7 +85,7 @@ def executor_edge(state: AgentState) -> str:
     logger.info(f"[Executor Edge] Retry count: {retry_count}")
 
     if query_error:
-        if retry_count < 3:
+        if retry_count < settings.sql_max_retries:
             logger.info("[Executor Edge] Routing to sql_generator for retry")
             return "sql_generator"
         logger.warning("[Executor Edge] Max retries reached, routing to response_synthesizer")

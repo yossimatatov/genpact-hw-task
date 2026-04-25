@@ -1,6 +1,7 @@
 import json
 from typing import Literal
 
+from config import settings
 from pydantic import BaseModel, Field
 
 from services.llm import get_openai_client
@@ -21,7 +22,7 @@ async def query_router_node(state: AgentState) -> dict[str, str]:
     client = get_openai_client()
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT_ROUTER_AGENT},
             {"role": "user", "content": state["user_query"]},

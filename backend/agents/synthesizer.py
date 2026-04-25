@@ -1,3 +1,4 @@
+from config import settings
 from services.llm import get_openai_client
 from state.state import AgentState
 from tools.prompts import SYSTEM_PROMPT_SYNTHESIZER_AGENT
@@ -30,7 +31,7 @@ async def response_synthesizer_node(state: AgentState) -> dict[str, str]:
     )
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=[{"role": "system", "content": system_prompt}],
         temperature=0,
     )

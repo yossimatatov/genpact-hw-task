@@ -1,3 +1,4 @@
+from config import settings
 from services.llm import get_openai_client
 from state.state import AgentState
 from tools.prompts import SYSTEM_PROMPT_REWRITER_AGENT
@@ -11,7 +12,7 @@ async def query_rewriter_node(state: AgentState) -> dict[str, str]:
     user_query = state["user_query"]
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT_REWRITER_AGENT},
             {"role": "user", "content": user_query},

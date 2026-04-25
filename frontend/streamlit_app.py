@@ -13,6 +13,7 @@ BACKEND_DIR = PROJECT_ROOT / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
+from config import settings  # noqa: E402
 from graph.graph import app_graph  # noqa: E402
 
 
@@ -42,7 +43,19 @@ async def run_agent(question: str) -> tuple[dict[str, Any], list[dict[str, Any]]
         "logs": [],
         "steps": [],
     }
-    config = {"configurable": {"thread_id": str(uuid.uuid4())}}
+    thread_id = str(uuid.uuid4())
+    config = {
+        "configurable": {"thread_id": thread_id},
+        "run_name": settings.langsmith_run_name,
+        "tags": settings.langsmith_tags,
+        "metadata": {
+            "thread_id": thread_id,
+            "entrypoint": "streamlit_app",
+            "database_url": settings.database_url,
+            "llm_model": settings.llm_model,
+            "langsmith_tracing": settings.langsmith_tracing,
+        },
+    }
 
     final_state: dict[str, Any] = initial_state.copy()
     trace: list[dict[str, Any]] = []
@@ -133,7 +146,7 @@ def main() -> None:
 
         st.divider()
         st.header("Run Notes")
-        st.write("Set `OPENAI_API_KEY` in `.env` before asking a question.")
+        st.write("Set `OPENAI_API_KEY` and LangSmith variables in `.env` before asking a question.")
 
     if "question" not in st.session_state:
         st.session_state.question = EXAMPLE_QUESTIONS[0]

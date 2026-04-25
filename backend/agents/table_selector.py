@@ -1,5 +1,6 @@
 import json
 
+from config import settings
 from pydantic import BaseModel, Field
 
 from services.llm import get_openai_client
@@ -29,7 +30,7 @@ async def table_selector_node(state: AgentState) -> dict[str, list[str]]:
     )
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": query_to_use},

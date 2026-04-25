@@ -1,12 +1,10 @@
-import os
 import sqlite3
-from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_DB_PATH = PROJECT_ROOT / "backend" / "data" / "university.db"
-SCHEMA_PATH = PROJECT_ROOT / "schema.sql"
-DB_PATH = Path(os.getenv("UNIVERSITY_DB_PATH", DEFAULT_DB_PATH))
+from config import settings
+
+DB_PATH = settings.database_path
+SCHEMA_PATH = settings.schema_path
 
 
 def initialize_database() -> None:

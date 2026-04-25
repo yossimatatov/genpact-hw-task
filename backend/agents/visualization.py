@@ -1,6 +1,7 @@
 import json
 from typing import Literal
 
+from config import settings
 from pydantic import BaseModel, Field
 
 from services.llm import get_openai_client
@@ -48,7 +49,7 @@ Rules:
 """
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=[{"role": "system", "content": system_prompt}],
         tools=[
             {
@@ -84,7 +85,7 @@ async def visualization_generator_node(state: AgentState) -> dict[str, object]:
     system_prompt = _format_visualization_prompt(query_to_use, results)
 
     response = await client.chat.completions.create(
-        model="gpt-4o",
+        model=settings.llm_model,
         messages=[{"role": "system", "content": system_prompt}],
         response_format={"type": "json_object"},
         temperature=0,
